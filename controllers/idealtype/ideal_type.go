@@ -38,6 +38,6 @@ func GetIdealType(p si.GetProfileByUserIDParams) middleware.Responder {
 		平均値が格納されたDBから理想のお相手を取得します。
 	*/
 
-	sEnt := user.Build()
-	return si.NewGetProfileByUserIDOK().WithPayload(&sEnt)
+	//sEnt := user.Build()
+	return si.NewGetIdealTypeOK() //.WithPayload(&sEnt)
 }
