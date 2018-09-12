@@ -1,3 +1,0 @@
-development:
-    driver: mymysql
-    open: tcp:localhost:3306*summer_intern_2018/root/
