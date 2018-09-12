@@ -472,23 +472,19 @@ definitions:
         type: "object"
         properties:
           from:
-            type: "integer"
-            format: "int64"
+            type: "string"
             description: "最低年齢"
           to:
-            type: "integer"
-            format: "int64"
+            type: "string"
             description: "最高年齢"
       height:
         type: "object"
         properties:
           from:
-            type: "integer"
-            format: "int64"
-            description: "最低身長"
+           type: "string"
+           description: "最低身長"
           to:
-            type: "integer"
-            format: "int64"
+            type: "string"
             description: "最高身長"
       residence_state:
         type: "array"
@@ -529,12 +525,10 @@ definitions:
         type: "object"
         properties:
           from:
-            type: "integer"
-            format: "int64"
+            type: "string"
             description: "最低年収"
           to:
-            type: "integer"
-            format: "int64"
+            type: "string"
             description: "最高年収"
       holiday:
         type: "array"
@@ -1251,7 +1245,7 @@ paths:
                 type: "string"
                 example: "Internal Server Error"
 
-  /IdealType:
+  /ideal_type:
     get:
       summary: "検索結果の取得"
       description: "
