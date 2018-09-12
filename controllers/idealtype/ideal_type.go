@@ -37,17 +37,17 @@ func GetIdealType(p si.GetIdealTypeParams) middleware.Responder {
 	// ダミーデータ
 	var ideal models.IdealType
 	ideal.Age = new(models.IdealTypeAge)
-	ideal.Age.From = 20
-	ideal.Age.To = 25
+	ideal.Age.From = "20歳"
+	ideal.Age.To = "25歳"
 	ideal.AnnualIncome = new(models.IdealTypeAnnualIncome)
-	ideal.AnnualIncome.From = 200
-	ideal.AnnualIncome.To = 600
+	ideal.AnnualIncome.From = "200万円"
+	ideal.AnnualIncome.To = "600万円"
 	ideal.BodyBuild = []string{"スリム", "やや細め", "普通"}
 	ideal.Drinking = []string{"飲む", "ときどき飲む"}
 	ideal.Education = []string{"高校卒", "大学卒"}
 	ideal.Height = new(models.IdealTypeHeight)
-	ideal.Height.From = 165
-	ideal.Height.To = 185
+	ideal.Height.From = "165cm"
+	ideal.Height.To = "185cm"
 	ideal.Holiday = []string{"土日", "平日"}
 	ideal.HomeState = []string{"東京", "千葉", "神奈川", "埼玉"}
 	ideal.Job = []string{"会社員", "医師", "弁護士"}
