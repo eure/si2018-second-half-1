@@ -7,6 +7,7 @@ import (
 	"github.com/go-openapi/strfmt"
 
 	"github.com/eure/si2018-second-half-1/entities"
+	"github.com/eure/si2018-second-half-1/libs/stats"
 	"github.com/eure/si2018-second-half-1/libs/token"
 	userlib "github.com/eure/si2018-second-half-1/libs/user"
 	"github.com/eure/si2018-second-half-1/repositories"
@@ -185,6 +186,22 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 				Code:    "400",
 				Message: "Bad Request :: 既にLike送信済みです",
 			})
+	}
+
+	sr := repositories.NewUserStatsRepository(s)
+	stat, err := sr.GetByUserID(me.ID)
+	if err != nil {
+		return si.NewPostLikeInternalServerError().WithPayload(
+			&si.PostLikeInternalServerErrorBody{
+				Code:    "500",
+				Message: "Internal Server Error :: Statsの取得に失敗しました",
+			})
+	}
+	if stat == nil {
+		empty := entities.UserStats{UserID: me.ID}
+		sr.Create(stats.ApplyNewLike(&empty, partner))
+	} else {
+		sr.Update(stats.ApplyNewLike(stat, partner))
 	}
 
 	repositories.TransactionBegin(s)
