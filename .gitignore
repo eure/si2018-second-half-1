@@ -6,6 +6,7 @@
 /restapi/doc.go
 /restapi/embedded_spec.go
 /restapi/server.go
+/db/dbconf.yml
 
 # assets (uploaded image files)
 assets/
