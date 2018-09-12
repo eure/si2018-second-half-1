@@ -1251,7 +1251,7 @@ paths:
                 type: "string"
                 example: "Internal Server Error"
 
-  /IdealType:
+  /ideal_type:
     get:
       summary: "検索結果の取得"
       description: "
