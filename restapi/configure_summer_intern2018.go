@@ -9,6 +9,7 @@ import (
 	errors "github.com/go-openapi/errors"
 	runtime "github.com/go-openapi/runtime"
 
+	"github.com/eure/si2018-second-half-1/controllers/idealtype"
 	"github.com/eure/si2018-second-half-1/controllers/message"
 	"github.com/eure/si2018-second-half-1/controllers/token"
 	"github.com/eure/si2018-second-half-1/controllers/user"
@@ -48,6 +49,7 @@ func configureAPI(api *summerintern.SummerIntern2018API) http.Handler {
 	api.PostLikeHandler = summerintern.PostLikeHandlerFunc(userlike.PostLike)
 	api.GetMatchesHandler = summerintern.GetMatchesHandlerFunc(usermatch.GetMatches)
 	api.PostImagesHandler = summerintern.PostImagesHandlerFunc(userimage.PostImage)
+	api.GetIdealTypeHandler = summerintern.GetIdealTypeHandlerFunc(idealtype.GetIdealType)
 
 	api.ServerShutdown = func() {}
 
