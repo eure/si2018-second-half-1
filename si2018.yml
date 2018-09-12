@@ -465,6 +465,86 @@ definitions:
     xml:
       name: "MatchUserResponse"
 
+  IdealType:
+    type: "object"
+    properties:
+      age:
+        type: "object"
+        properties:
+          from:
+            type: "integer"
+            format: "int64"
+            description: "最低年齢"
+          to:
+            type: "integer"
+            format: "int64"
+            description: "最高年齢"
+      height:
+        type: "object"
+        properties:
+          from:
+            type: "integer"
+            format: "int64"
+            description: "最低身長"
+          to:
+            type: "integer"
+            format: "int64"
+            description: "最高身長"
+      residence_state:
+        type: "array"
+        items:
+         type: "string"
+        description: "居住地"
+      job:
+        type: "array"
+        items:
+         type: "string"
+        description: "仕事"
+      education:
+        type: "array"
+        items:
+         type: "string"
+        description: "学歴"
+      drinking:
+        type: "array"
+        items:
+         type: "string"
+        description: "お酒を飲むか？"
+      smoking:
+        type: "array"
+        items:
+         type: "string"
+        description: "タバコを吸うか？"
+      body_build:
+        type: "array"
+        items:
+         type: "string"
+        description: "体型"
+      home_state:
+        type: "array"
+        items:
+         type: "string"
+        description: "出身地"
+      annual_income:
+        type: "object"
+        properties:
+          from:
+            type: "integer"
+            format: "int64"
+            description: "最低年収"
+          to:
+            type: "integer"
+            format: "int64"
+            description: "最高年収"
+      holiday:
+        type: "array"
+        items:
+         type: "string"
+        description: "休日"
+
+    xml:
+      name: "IdealType"
+
 paths:
   /tokens/{userId}:
     get:
@@ -541,6 +621,11 @@ paths:
         required: true
         description: "オフセット"
         type: integer
+      - in: body
+        required: false
+        name: params
+        schema:
+            $ref: "#/definitions/IdealType"
       responses:
         200:
           description: "OK. (ユーザーデータの一覧を返す.)"
@@ -791,7 +876,7 @@ paths:
             type: array
             items:
               $ref: "#/definitions/LikeUserResponse"
-              
+
         400:
           description: "Bad Request"
           schema:
@@ -1132,6 +1217,58 @@ paths:
                 example: "https://si-2018-000.eure.jp/assets/pose_kandou_man.png"
                 format: "uri"
                 description: "アップロードされた画像のURI"
+        400:
+          description: "Bad Request"
+          schema:
+            type: object
+            properties:
+              code:
+                type: "string"
+                example: "400"
+              message:
+                type: "string"
+                example: "Bad Request"
+        401:
+          description: "Unauthorized (トークン認証に失敗)"
+          schema:
+            type: object
+            properties:
+              code:
+                type: "string"
+                example: "401"
+              message:
+                type: "string"
+                example: "Token Is Invalid"
+        500:
+          description: "Internal Server Error"
+          schema:
+            type: object
+            properties:
+              code:
+                type: "string"
+                example: "500"
+              message:
+                type: "string"
+                example: "Internal Server Error"
+
+  /IdealType:
+    get:
+      summary: "検索結果の取得"
+      description: "
+        スピードワゴンのエンドポイント<br>\
+      "
+      operationId: "getIdealType"
+      parameters:
+      - in: query
+        required: true
+        name: token
+        description: "ログイントークン"
+        type: string
+      responses:
+        200:
+          description: "OK (良いねの学習データが返る)"
+          schema:
+            $ref: "#/definitions/IdealType"
         400:
           description: "Bad Request"
           schema:
