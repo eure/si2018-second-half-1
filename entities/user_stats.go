@@ -144,6 +144,12 @@ var CoordinateMap = map[string]Coordinate{
 	"鹿児島": {31.56028, 130.55806},
 	"沖縄":  {26.2125, 127.68111},
 }
+var States = []string{
+	"北海道", "青森", "岩手", "宮城", "秋田", "山形", "福島", "茨城", "栃木", "群馬", "埼玉", "千葉",
+	"東京", "神奈川", "新潟", "富山", "石川", "福井", "山梨", "長野", "岐阜", "静岡", "愛知", "三重",
+	"滋賀", "京都", "大阪", "兵庫", "奈良", "和歌山", "鳥取", "島根", "岡山", "広島", "山口", "徳島",
+	"香川", "愛媛", "高知", "福岡", "佐賀", "長崎", "熊本", "大分", "宮崎", "鹿児島", "沖縄",
+}
 
 func getNearChoices(average float64, choices map[string]float64) []string {
 	var left, just, right string
@@ -200,12 +206,22 @@ func getNearHeight(average float64) models.IdealTypeHeight {
 	return models.IdealTypeHeight{From: int64ToString(r.From) + "cm", To: int64ToString(r.To) + "cm"}
 }
 
+func (p *Coordinate) Distance2(q *Coordinate) float64 {
+	return math.Pow(p.Latitude-q.Latitude, 2) + math.Pow(p.Longitude-q.Longitude, 2)
+}
+
 func getNearState(x, y float64) []string {
-	// dist := make(map[string]float64)
-	// for k, v := range CoordinateMap {
-	// 	dist[k]
-	// }
-	return []string{"東京"}
+	p := Coordinate{Longitude: x, Latitude: y}
+	dist := make(map[string]float64)
+	for k, v := range CoordinateMap {
+		dist[k] = p.Distance2(&v)
+	}
+	sort.SliceStable(States, func(i, j int) bool {
+		return dist[States[i]] < dist[States[j]]
+	})
+	ans := make([]string, 3)
+	copy(ans, States[:3])
+	return ans
 }
 
 func round(f float64) float64 {
@@ -257,14 +273,18 @@ func getModeJob(freq [3]float64) []string {
 	sort.SliceStable(Jobs, func(i, j int) bool {
 		return freq[JobID[Jobs[i]]] > freq[JobID[Jobs[j]]]
 	})
-	return Jobs[0:1]
+	ans := make([]string, 2)
+	copy(ans, Jobs[:2])
+	return ans
 }
 
 func getModeHoliday(freq [4]float64) []string {
 	sort.SliceStable(Holiday, func(i, j int) bool {
 		return freq[HolidayID[Holiday[i]]] > freq[HolidayID[Holiday[j]]]
 	})
-	return Holiday[0:1]
+	ans := make([]string, 2)
+	copy(ans, Holiday[:2])
+	return ans
 }
 
 func (s UserStats) Build() models.IdealType {
