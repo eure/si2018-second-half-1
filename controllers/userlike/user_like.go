@@ -198,16 +198,6 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 				Message: "Internal Server Error :: Statsの取得に失敗しました",
 			})
 	}
-	if stat == nil {
-		empty := entities.UserStats{UserID: me.ID}
-		empty = stats.ApplyNewLike(&empty, partner)
-		fmt.Println("nil", empty)
-		sr.Create(empty)
-	} else {
-		newstat := stats.ApplyNewLike(stat, partner)
-		fmt.Println("not nil", newstat)
-		sr.Update(newstat)
-	}
 
 	repositories.TransactionBegin(s)
 	// Like (Me -> Partner) レコードのInsert
@@ -226,6 +216,18 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 				Code:    "500",
 				Message: "Internal Server Error :: LikeのInsertに失敗しました",
 			})
+	}
+	if stat == nil {
+		empty := entities.UserStats{UserID: me.ID}
+		empty = stats.ApplyNewLike(&empty, partner)
+		empty.CreatedAt = now
+		empty.UpdatedAt = now
+		fmt.Println("nil", empty)
+		sr.Create(empty)
+	} else {
+		newstat := stats.ApplyNewLike(stat, partner)
+		fmt.Println("not nil", newstat)
+		sr.Update(newstat)
 	}
 
 	// Like (Partner -> Me) の存在チェック
