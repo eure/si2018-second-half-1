@@ -1285,6 +1285,17 @@ paths:
               message:
                 type: "string"
                 example: "Token Is Invalid"
+        404:
+          description: "Ideal Type Not Found"
+          schema:
+            type: object
+            properties:
+              code:
+                type: "string"
+                example: "404"
+              message:
+                type: "string"
+                example: "Ideal Type Not Found"
         500:
           description: "Internal Server Error"
           schema:
