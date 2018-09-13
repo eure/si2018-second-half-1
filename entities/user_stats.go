@@ -34,6 +34,58 @@ type UserStats struct {
 	UpdatedAt       strfmt.DateTime `xorm:"updated_at"`
 }
 
+func (s *UserStats) Multiply(ratio float64) UserStats {
+	return UserStats{
+		s.UserID,
+		s.Birthday * ratio,
+		s.HomeStateX * ratio,
+		s.HomeStateY * ratio,
+		s.ResidenceStateX * ratio,
+		s.ResidenceStateY * ratio,
+		s.Education * ratio,
+		s.AnnualIncome * ratio,
+		s.Height * ratio,
+		s.BodyBuild * ratio,
+		s.Smoking * ratio,
+		s.Drinking * ratio,
+		s.HolidayWeekday * ratio,
+		s.HolidayWeekend * ratio,
+		s.HolidayRandom * ratio,
+		s.HolidayOthers * ratio,
+		s.JobEmployee * ratio,
+		s.JobStudent * ratio,
+		s.JobCreator * ratio,
+		s.CreatedAt,
+		s.UpdatedAt,
+	}
+}
+
+func (s *UserStats) Add(u *UserStats) UserStats {
+	return UserStats{
+		s.UserID,
+		s.Birthday + u.Birthday,
+		s.HomeStateX + u.HomeStateX,
+		s.HomeStateY + u.HomeStateY,
+		s.ResidenceStateX + u.ResidenceStateX,
+		s.ResidenceStateY + u.ResidenceStateY,
+		s.Education + u.Education,
+		s.AnnualIncome + u.AnnualIncome,
+		s.Height + u.Height,
+		s.BodyBuild + u.BodyBuild,
+		s.Smoking + u.Smoking,
+		s.Drinking + u.Drinking,
+		s.HolidayWeekday + u.HolidayWeekday,
+		s.HolidayWeekend + u.HolidayWeekend,
+		s.HolidayRandom + u.HolidayRandom,
+		s.HolidayOthers + u.HolidayOthers,
+		s.JobEmployee + u.JobEmployee,
+		s.JobStudent + u.JobStudent,
+		s.JobCreator + u.JobCreator,
+		s.CreatedAt,
+		s.UpdatedAt,
+	}
+}
+
 type Coordinate struct {
 	Latitude  float64 // 緯度
 	Longitude float64 // 経度
@@ -211,20 +263,20 @@ func getModeHoliday(freq [4]float64) []string {
 	return Holiday[0:1]
 }
 
-func (u UserStats) Build() models.IdealType {
-	age := getNearAge(u.Birthday)
-	height := getNearHeight(u.Height)
-	income := getNearAnnualIncome(u.AnnualIncome)
+func (s UserStats) Build() models.IdealType {
+	age := getNearAge(s.Birthday)
+	height := getNearHeight(s.Height)
+	income := getNearAnnualIncome(s.AnnualIncome)
 	return models.IdealType{
-		Drinking:       getNearChoices(u.Drinking, DrinkingChoices),
-		Education:      getNearChoices(u.Education, EducationChoices),
-		BodyBuild:      getNearChoices(u.BodyBuild, BodyBuildChoices),
-		Smoking:        getNearChoices(u.Smoking, SmokingChoices),
+		Drinking:       getNearChoices(s.Drinking, DrinkingChoices),
+		Education:      getNearChoices(s.Education, EducationChoices),
+		BodyBuild:      getNearChoices(s.BodyBuild, BodyBuildChoices),
+		Smoking:        getNearChoices(s.Smoking, SmokingChoices),
 		Age:            &age,
 		Height:         &height,
 		AnnualIncome:   &income,
-		HomeState:      getNearState(u.HomeStateX, u.HomeStateY),
-		ResidenceState: getNearState(u.ResidenceStateX, u.ResidenceStateY),
-		Job:            getModeJob([3]float64{u.JobEmployee, u.JobStudent, u.JobCreator}),
-		Holiday:        getModeHoliday([4]float64{u.HolidayWeekday, u.HolidayWeekend, u.HolidayRandom, u.HolidayOthers})}
+		HomeState:      getNearState(s.HomeStateX, s.HomeStateY),
+		ResidenceState: getNearState(s.ResidenceStateX, s.ResidenceStateY),
+		Job:            getModeJob([3]float64{s.JobEmployee, s.JobStudent, s.JobCreator}),
+		Holiday:        getModeHoliday([4]float64{s.HolidayWeekday, s.HolidayWeekend, s.HolidayRandom, s.HolidayOthers})}
 }

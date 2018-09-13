@@ -1,6 +1,8 @@
 package entities
 
 import (
+	"strconv"
+
 	"github.com/eure/si2018-second-half-1/models"
 	"github.com/go-openapi/strfmt"
 )
@@ -85,4 +87,14 @@ func (users *Users) Build() []*models.User {
 		sUsers = append(sUsers, &swaggerUser)
 	}
 	return sUsers
+}
+
+func (u User) GetHeight() float64 {
+	num, _ := strconv.Atoi(u.Height[0 : len(u.Height)-2])
+	return float64(num)
+}
+
+func (u User) GetAnnualIncome() float64 {
+	num, _ := strconv.Atoi(u.AnnualIncome[0 : len(u.AnnualIncome)-2])
+	return float64(num)
 }

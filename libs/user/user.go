@@ -1,9 +1,13 @@
 package user
 
 import (
+	"strconv"
+	"time"
+
 	"github.com/eure/si2018-second-half-1/entities"
 	"github.com/eure/si2018-second-half-1/repositories"
 	si "github.com/eure/si2018-second-half-1/restapi/summerintern"
+	"github.com/go-openapi/strfmt"
 )
 
 func BuildUserEntityByModel(meID int64, p si.PutProfileBody) entities.User {
@@ -71,4 +75,55 @@ func SetUserImage(s *repositories.Session, user entities.User) (entities.User, e
 
 	user.ImageURI = userImage.Path
 	return user, err
+}
+
+func GetHeight(u entities.User) float64 {
+	num, _ := strconv.Atoi(u.Height[0 : len(u.Height)-2])
+	return float64(num)
+}
+
+func GetAnnualIncome(u entities.User) float64 {
+	num, _ := strconv.Atoi(u.AnnualIncome[0 : len(u.AnnualIncome)-2])
+	return float64(num)
+}
+
+func OneHot(value string, items []string) []float64 {
+	vec := make([]float64, 0)
+	for _, v := range items {
+		hot := 0.0
+		if value == v {
+			hot = 1.0
+		}
+		vec = append(vec, hot)
+	}
+	return hot
+}
+
+func MakeStat(u *entities.User) entities.UserStats {
+	home := CoordinateMap[u.HomeState]
+	resid := CoordinateMap[u.ResidenceState]
+	hol := OneHot(u.Holiday, entities.Holiday)
+	job := OneHot(u.Job, entities.Job)
+	return UserStats{
+		0,
+		float64(time.Time(u.Birthday).Unix()),
+		home.Longitude,
+		home.Latitude,
+		resid.Longitude,
+		resid.Latitude,
+		EducationChoices[u.Education],
+		GetAnnualIncome(u),
+		GetHeight(u),
+		BodyBuildChoices[u.BodyBuild],
+		SmokingChoices[u.Smoking],
+		DrinkingChoices[u.Drinking],
+		hol[0],
+		hol[1],
+		hol[2],
+		hol[3],
+		hol[0],
+		hol[1],
+		hol[2],
+		strfmt.DateTime(u.Birthday),
+		strfmt.DateTime(u.Birthday)}
 }
