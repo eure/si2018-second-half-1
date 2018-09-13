@@ -27,9 +27,9 @@ type UserStats struct {
 	HolidayWeekend  float64         `xorm:"holiday_weekend"`
 	HolidayRandom   float64         `xorm:"holiday_random"`
 	HolidayOthers   float64         `xorm:"holiday_others"`
-	JobDoctor       float64         `xorm:"job_doctor"`
-	JobOffice       float64         `xorm:"job_office"`
-	JobClerk        float64         `xorm:"job_clerk"`
+	JobEmployee     float64         `xorm:"job_employee"`
+	JobStudent      float64         `xorm:"job_student"`
+	JobCreator      float64         `xorm:"job_creator"`
 	CreatedAt       strfmt.DateTime `xorm:"created_at"`
 	UpdatedAt       strfmt.DateTime `xorm:"updated_at"`
 }
@@ -192,10 +192,10 @@ func getNearAge(average float64) models.IdealTypeAge {
 	return models.IdealTypeAge{From: int64ToString(r.From) + "歳", To: int64ToString(r.To) + "歳"}
 }
 
-var JobID = map[string]int64{"pilot": 0, "pilot2": 1, "pilot3": 2}
-var Jobs = []string{"pilot", "pilot2", "pilot3"}
-var HolidayID = map[string]int64{"weekday": 0, "weekend": 1, "other": 2, "random": 3}
-var Holiday = []string{"weekday", "weekend", "other", "random"}
+var JobID = map[string]int64{"会社員": 0, "学生": 1, "クリエイター": 2}
+var Jobs = []string{"会社員", "学生", "クリエイター"}
+var HolidayID = map[string]int64{"平日": 0, "土日": 1, "不定期": 2, "その他": 3}
+var Holiday = []string{"平日", "土日", "不定期", "その他"}
 
 func getModeJob(freq [3]float64) []string {
 	sort.SliceStable(Jobs, func(i, j int) bool {
@@ -225,6 +225,6 @@ func (u UserStats) Build() models.IdealType {
 		AnnualIncome:   &income,
 		HomeState:      getNearState(u.HomeStateX, u.HomeStateY),
 		ResidenceState: getNearState(u.ResidenceStateX, u.ResidenceStateY),
-		Job:            getModeJob([3]float64{u.JobClerk, u.JobDoctor, u.JobOffice}),
-		Holiday:        getModeHoliday([4]float64{u.HolidayWeekend, u.HolidayWeekday, u.HolidayRandom, u.HolidayOthers})}
+		Job:            getModeJob([3]float64{u.JobEmployee, u.JobStudent, u.JobCreator}),
+		Holiday:        getModeHoliday([4]float64{u.HolidayWeekday, u.HolidayWeekend, u.HolidayRandom, u.HolidayOthers})}
 }
