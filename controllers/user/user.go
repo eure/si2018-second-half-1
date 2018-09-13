@@ -1,6 +1,8 @@
 package user
 
 import (
+	"fmt"
+
 	"github.com/go-openapi/runtime/middleware"
 
 	"github.com/eure/si2018-second-half-1/entities"
@@ -11,6 +13,7 @@ import (
 )
 
 func GetUsers(p si.GetUsersParams) middleware.Responder {
+	fmt.Println("**************** GetUsers STRAT ****************")
 	// バリデーション
 	limit := p.Limit
 	offset := p.Offset
@@ -71,6 +74,7 @@ func GetUsers(p si.GetUsersParams) middleware.Responder {
 
 	eUsers := entities.Users(userList)
 	sUsers := eUsers.Build()
+	fmt.Println("**************** GetUsers END ****************")
 	return si.NewGetUsersOK().WithPayload(sUsers)
 }
 

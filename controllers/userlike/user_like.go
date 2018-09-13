@@ -6,6 +6,8 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 
+	"fmt"
+
 	"github.com/eure/si2018-second-half-1/entities"
 	"github.com/eure/si2018-second-half-1/libs/stats"
 	"github.com/eure/si2018-second-half-1/libs/token"
@@ -118,6 +120,7 @@ func GetLikes(p si.GetLikesParams) middleware.Responder {
 }
 
 func PostLike(p si.PostLikeParams) middleware.Responder {
+	fmt.Println("**************** PostLike STRAT ****************")
 	// リクエストパラメータのバリデーション
 	t := p.Params.Token
 	v := NewPostValidator(t, p.UserID)
@@ -277,6 +280,7 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 	}
 	repositories.TransactionCommit(s)
 
+	fmt.Println("**************** PostLike END ****************")
 	return si.NewPostLikeOK().WithPayload(
 		&si.PostLikeOKBody{
 			Code:    "200",
