@@ -1,8 +1,9 @@
 package entities
 
 import (
+	"fmt"
 	"math"
-	"strconv"
+	"sort"
 	"time"
 
 	"github.com/eure/si2018-second-half-1/models"
@@ -33,11 +34,16 @@ type UserStats struct {
 	UpdatedAt       strfmt.DateTime `xorm:"updated_at"`
 }
 
+type Coordinate struct {
+	Latitude  float64 // 緯度
+	Longitude float64 // 経度
+}
+
 var DrinkingChoices = map[string]float64{"飲まない": 0, "ときどき飲む": 1.0 / 2, "飲む": 2.0 / 2}
 var EducationChoices = map[string]float64{"その他": 0, "高校卒": 1.0 / 4, "短大/専門学校": 2.0 / 4, "大学卒": 3.0 / 4, "大学院卒": 4.0 / 4}
 var BodyBuildChoices = map[string]float64{"スリム": 0, "やや細め": 1.0 / 6, "普通": 2.0 / 6, "グラマー": 3.0 / 6, "筋肉質": 4.0 / 6, "ややぽっちゃり": 5.0 / 6, "ぽっちゃり": 6.0 / 6}
 var SmokingChoices = map[string]float64{"吸わない": 0, "非喫煙者の前では吸わない": 1.0 / 5, "相手が嫌ならやめる": 2.0 / 5, "ときどき吸う": 3.0 / 5, "吸う（電子タバコ）": 4.0 / 5, "吸う": 5.0 / 5}
-var CoordinateMap = map[string]models.Coordinate{
+var CoordinateMap = map[string]Coordinate{
 	"北海道": {43.06417, 141.34694},
 	"青森":  {40.82444, 140.74},
 	"岩手":  {39.70361, 141.1525},
@@ -87,10 +93,6 @@ var CoordinateMap = map[string]models.Coordinate{
 	"沖縄":  {26.2125, 127.68111},
 }
 
-func toCoordinate(location string) models.Coordinate {
-	return CoordinateMap[location]
-}
-
 func getNearChoices(average float64, choices map[string]float64) []string {
 	var left, just, right string
 	for k, v := range choices {
@@ -116,18 +118,34 @@ func getNearChoices(average float64, choices map[string]float64) []string {
 }
 
 type Range struct {
-	From int
-	To   int
+	From int64
+	To   int64
+}
+
+func int64ToString(n int64) string {
+	return fmt.Sprintf("%d", n)
 }
 
 func getRoundedRange(average float64, lower, upper, unit int64) Range {
 	ind := (average - float64(lower)) / float64(unit)
-	return Range{From: 0, To: 0}
+	floor := int64(math.Floor(ind))
+	ceil := int64(math.Ceil(ind))
+	bound := (upper - lower) / unit
+	if floor == ceil {
+		if floor == 0 {
+			return Range{0, 1}
+		}
+		if floor == bound {
+			return Range{bound - 1, bound + 1}
+		}
+		return Range{floor - 1, floor + 1}
+	}
+	return Range{floor, ceil}
 }
 
 func getNearHeight(average float64) models.IdealTypeHeight {
 	r := getRoundedRange(average, 135, 200, 5)
-	return models.IdealTypeHeight{From: strconv.Itoa(r.From) + "cm", To: strconv.Itoa(r.To) + "cm"}
+	return models.IdealTypeHeight{From: int64ToString(r.From) + "cm", To: int64ToString(r.To) + "cm"}
 }
 
 func getNearState(x, y float64) []string {
@@ -138,8 +156,31 @@ func round(f float64) float64 {
 	return math.Floor(f + .5)
 }
 
+var IncomeChoices = []int64{200, 400, 600, 800, 1000, 1500, 2000, 3000}
+
 func getNearAnnualIncome(average float64) models.IdealTypeAnnualIncome {
-	return models.IdealTypeAnnualIncome{From: "500万円", To: "500万円"}
+	left := -1
+	right := -1
+	just := -1
+	for k, v := range IncomeChoices {
+		fv := float64(v)
+		if (left < 0 || IncomeChoices[left] < v) && fv < average {
+			left = k
+		} else if average < fv && (right < 0 || v < IncomeChoices[right]) {
+			right = k
+		} else if average == fv {
+			just = k
+		}
+	}
+	if left < 0 {
+		left = just
+	}
+	if right < 0 {
+		right = just
+	}
+	return models.IdealTypeAnnualIncome{
+		From: int64ToString(IncomeChoices[left]) + "万円",
+		To:   int64ToString(IncomeChoices[right]) + "万円"}
 }
 
 func getNearAge(average float64) models.IdealTypeAge {
@@ -148,15 +189,26 @@ func getNearAge(average float64) models.IdealTypeAge {
 	span := now.Sub(birth)
 	years := span.Hours() / (24 * 365)
 	r := getRoundedRange(years, 18, 65, 1)
-	return models.IdealTypeAge{From: strconv.Itoa(r.From) + "歳", To: strconv.Itoa(r.To) + "歳"}
+	return models.IdealTypeAge{From: int64ToString(r.From) + "歳", To: int64ToString(r.To) + "歳"}
 }
 
-func getModeJob([]float64) []string {
-	return []string{"会社員"}
+var JobID = map[string]int64{"pilot": 0, "pilot2": 1, "pilot3": 2}
+var Jobs = []string{"pilot", "pilot2", "pilot3"}
+var HolidayID = map[string]int64{"weekday": 0, "weekend": 1, "other": 2, "random": 3}
+var Holiday = []string{"weekday", "weekend", "other", "random"}
+
+func getModeJob(freq [3]float64) []string {
+	sort.SliceStable(Jobs, func(i, j int) bool {
+		return freq[JobID[Jobs[i]]] > freq[JobID[Jobs[j]]]
+	})
+	return Jobs[0:1]
 }
 
-func getModeHoliday([]float64) []string {
-	return []string{"土日"}
+func getModeHoliday(freq [4]float64) []string {
+	sort.SliceStable(Holiday, func(i, j int) bool {
+		return freq[HolidayID[Holiday[i]]] > freq[HolidayID[Holiday[j]]]
+	})
+	return Holiday[0:1]
 }
 
 func (u UserStats) Build() models.IdealType {
@@ -173,6 +225,6 @@ func (u UserStats) Build() models.IdealType {
 		AnnualIncome:   &income,
 		HomeState:      getNearState(u.HomeStateX, u.HomeStateY),
 		ResidenceState: getNearState(u.ResidenceStateX, u.ResidenceStateY),
-		Job:            getModeJob([]float64{u.JobClerk, u.JobDoctor, u.JobOffice}),
-		Holiday:        getModeHoliday([]float64{u.HolidayWeekend, u.HolidayWeekday, u.HolidayRandom, u.HolidayOthers})}
+		Job:            getModeJob([3]float64{u.JobClerk, u.JobDoctor, u.JobOffice}),
+		Holiday:        getModeHoliday([4]float64{u.HolidayWeekend, u.HolidayWeekday, u.HolidayRandom, u.HolidayOthers})}
 }
