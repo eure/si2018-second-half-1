@@ -2,6 +2,7 @@ package entities
 
 import (
 	"strconv"
+	"strings"
 
 	"github.com/eure/si2018-second-half-1/models"
 	"github.com/go-openapi/strfmt"
@@ -95,6 +96,17 @@ func (u User) GetHeight() float64 {
 }
 
 func (u User) GetAnnualIncome() float64 {
-	num, _ := strconv.Atoi(u.AnnualIncome[0 : len(u.AnnualIncome)-2])
-	return float64(num)
+	s := u.AnnualIncome
+	sep := strings.Index(s, "〜")
+	if sep < 0 {
+		switch s {
+		case "200万円未満":
+			return 100.0
+		default:
+			return 4000
+		}
+	}
+	from, _ := strconv.Atoi(s[:strings.Index(s, "万")])
+	to, _ := strconv.Atoi(s[sep+1 : strings.LastIndex(s, "万")])
+	return (float64(from) + float64(to)) / 2.0
 }
