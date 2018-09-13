@@ -33,11 +33,16 @@ type UserStats struct {
 	UpdatedAt       strfmt.DateTime `xorm:"updated_at"`
 }
 
+type Coordinate struct {
+	Latitude  float64 // 緯度
+	Longitude float64 // 経度
+}
+
 var DrinkingChoices = map[string]float64{"飲まない": 0, "ときどき飲む": 1.0 / 2, "飲む": 2.0 / 2}
 var EducationChoices = map[string]float64{"その他": 0, "高校卒": 1.0 / 4, "短大/専門学校": 2.0 / 4, "大学卒": 3.0 / 4, "大学院卒": 4.0 / 4}
 var BodyBuildChoices = map[string]float64{"スリム": 0, "やや細め": 1.0 / 6, "普通": 2.0 / 6, "グラマー": 3.0 / 6, "筋肉質": 4.0 / 6, "ややぽっちゃり": 5.0 / 6, "ぽっちゃり": 6.0 / 6}
 var SmokingChoices = map[string]float64{"吸わない": 0, "非喫煙者の前では吸わない": 1.0 / 5, "相手が嫌ならやめる": 2.0 / 5, "ときどき吸う": 3.0 / 5, "吸う（電子タバコ）": 4.0 / 5, "吸う": 5.0 / 5}
-var CoordinateMap = map[string]models.Coordinate{
+var CoordinateMap = map[string]Coordinate{
 	"北海道": {43.06417, 141.34694},
 	"青森":  {40.82444, 140.74},
 	"岩手":  {39.70361, 141.1525},
@@ -85,12 +90,6 @@ var CoordinateMap = map[string]models.Coordinate{
 	"宮崎":  {31.91111, 131.42389},
 	"鹿児島": {31.56028, 130.55806},
 	"沖縄":  {26.2125, 127.68111},
-}
-
-func toCoordinate(location string) models.Coordinate {
-	var coordinate models.Coordinate
-
-	return coordinate
 }
 
 func getNearChoices(average float64, choices map[string]float64) []string {
