@@ -185,14 +185,14 @@ func getRoundedRange(average float64, lower, upper, unit int64) Range {
 	bound := (upper - lower) / unit
 	if floor == ceil {
 		if floor == 0 {
-			return Range{0, 1}
+			return Range{lower, lower + unit}
 		}
 		if floor == bound {
-			return Range{bound - 1, bound + 1}
+			return Range{lower + unit*(bound-1), lower + unit*bound}
 		}
-		return Range{floor - 1, floor + 1}
+		return Range{lower + unit*(floor-1), lower + unit*(floor+1)}
 	}
-	return Range{floor, ceil}
+	return Range{lower + unit*floor, lower + unit*ceil}
 }
 
 func getNearHeight(average float64) models.IdealTypeHeight {
@@ -201,6 +201,10 @@ func getNearHeight(average float64) models.IdealTypeHeight {
 }
 
 func getNearState(x, y float64) []string {
+	// dist := make(map[string]float64)
+	// for k, v := range CoordinateMap {
+	// 	dist[k]
+	// }
 	return []string{"東京"}
 }
 
