@@ -188,6 +188,7 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 			})
 	}
 
+	// ここからスピードワゴン機能
 	sr := repositories.NewUserStatsRepository(s)
 	stat, err := sr.GetByUserID(me.ID)
 	if err != nil {
