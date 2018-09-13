@@ -34,7 +34,7 @@ type UserStats struct {
 	UpdatedAt       strfmt.DateTime `xorm:"updated_at"`
 }
 
-func (s *UserStats) Multiply(ratio float64) UserStats {
+func (s UserStats) Multiply(ratio float64) UserStats {
 	return UserStats{
 		s.UserID,
 		s.Birthday * ratio,
@@ -60,7 +60,7 @@ func (s *UserStats) Multiply(ratio float64) UserStats {
 	}
 }
 
-func (s *UserStats) Add(u *UserStats) UserStats {
+func (s UserStats) Add(u UserStats) UserStats {
 	return UserStats{
 		s.UserID,
 		s.Birthday + u.Birthday,

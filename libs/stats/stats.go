@@ -15,7 +15,7 @@ func ApplyNewLike(s *entities.UserStats, u *entities.User) entities.UserStats {
 func GetAverage(users []entities.User) entities.UserStats {
 	var s entities.UserStats
 	for i, u := range users {
-		us := user.MakeStat(u)
+		us := user.MakeStat(&u)
 		switch {
 		case i == 0:
 			s = us
