@@ -7,6 +7,7 @@ import (
 	"github.com/go-openapi/strfmt"
 
 	"github.com/eure/si2018-second-half-1/entities"
+	"github.com/eure/si2018-second-half-1/libs/stats"
 	"github.com/eure/si2018-second-half-1/libs/token"
 	userlib "github.com/eure/si2018-second-half-1/libs/user"
 	"github.com/eure/si2018-second-half-1/repositories"
@@ -187,6 +188,16 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 			})
 	}
 
+	sr := repositories.NewUserStatsRepository(s)
+	stat, err := sr.GetByUserID(me.ID)
+	if err != nil {
+		return si.NewPostLikeInternalServerError().WithPayload(
+			&si.PostLikeInternalServerErrorBody{
+				Code:    "500",
+				Message: "Internal Server Error :: Statsの取得に失敗しました",
+			})
+	}
+
 	repositories.TransactionBegin(s)
 	// Like (Me -> Partner) レコードのInsert
 	now := strfmt.DateTime(time.Now())
@@ -204,6 +215,12 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 				Code:    "500",
 				Message: "Internal Server Error :: LikeのInsertに失敗しました",
 			})
+	}
+	if stat == nil {
+		empty := entities.UserStats{UserID: me.ID}
+		sr.Create(stats.ApplyNewLike(&empty, partner))
+	} else {
+		sr.Update(stats.ApplyNewLike(stat, partner))
 	}
 
 	// Like (Partner -> Me) の存在チェック
