@@ -33,6 +33,14 @@ func GetIdealType(p si.GetIdealTypeParams) middleware.Responder {
 				Message: "Unauthorized :: 無効なトークン",
 			})
 	}
+	if me.ID % 2 == 1 {
+		return si.NewGetIdealTypeNotFound().WithPayload(
+			&si.GetIdealTypeNotFound {
+				Code: "404",
+				Message: "Ideal Type Not Found",
+			}
+		)
+	}
 
 	// ダミーデータ
 	var ideal models.IdealType
