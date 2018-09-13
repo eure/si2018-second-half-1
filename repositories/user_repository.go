@@ -8,7 +8,6 @@ import (
 	"github.com/eure/si2018-second-half-1/entities"
 	"github.com/eure/si2018-second-half-1/libs/user"
 	"github.com/eure/si2018-second-half-1/models"
-	"github.com/go-xorm/builder"
 )
 
 type UserRepository struct {
@@ -60,64 +59,62 @@ func (r *UserRepository) FindWithCondition(limit, offset int, gender string, ids
 	var users []entities.User
 
 	s := r.GetSession()
+	s.Where("gender = ?", gender)
 
 	// if len(ids) > 0 {
 	// IDの挿入
-	query := builder.NotIn("id", ids)
+	s.NotIn("id", ids)
 	//}
 
 	// 年収の挿入
 	if searchCondition.AnnualIncome.From != "" || searchCondition.AnnualIncome.To != "" {
-		query = builder.In("", user.ReAnnualIncome(searchCondition.Age.From, searchCondition.Age.To))
+		s.In("", user.ReAnnualIncome(searchCondition.Age.From, searchCondition.Age.To))
 	}
 
 	// 体型の挿入
 	if len(searchCondition.BodyBuild) == 0 {
-		query = builder.In("", searchCondition.BodyBuild)
+		s.In("", searchCondition.BodyBuild)
 	}
 
 	// お酒を飲むかの挿入
 	if len(searchCondition.Drinking) == 0 {
-		query = builder.In("", searchCondition.Drinking)
+		s.In("", searchCondition.Drinking)
 	}
 
 	// 学歴の挿入
 	if len(searchCondition.Education) == 0 {
-		query = builder.In("", searchCondition.Education)
+		s.In("", searchCondition.Education)
 	}
 
 	// 身長の挿入
 	if searchCondition.Height.From != "" || searchCondition.Height.To != "" {
-		query = builder.In("", user.ReAnnualIncome(searchCondition.Height.From, searchCondition.Age.To))
+		s.In("", user.ReAnnualIncome(searchCondition.Height.From, searchCondition.Age.To))
 	}
 
 	// 休日の挿入
 	if len(searchCondition.Holiday) == 0 {
-		query = builder.In("", searchCondition.Holiday)
+		s.In("", searchCondition.Holiday)
 	}
 
 	// 出身地の挿入
 	if len(searchCondition.HomeState) == 0 {
-		query = builder.In("", searchCondition.HomeState)
+		s.In("", searchCondition.HomeState)
 	}
 
 	// 仕事の挿入
 	if len(searchCondition.Job) == 0 {
-		query = builder.In("job", searchCondition.Job)
+		s.In("job", searchCondition.Job)
 	}
 
 	// 居住地の挿入
 	if len(searchCondition.ResidenceState) == 0 {
-		query = builder.In("", searchCondition.ResidenceState)
+		s.In("", searchCondition.ResidenceState)
 	}
 
 	// タバコの挿入
 	if len(searchCondition.Smoking) == 0 {
-		query = builder.In("", searchCondition.Smoking)
+		s.In("", searchCondition.Smoking)
 	}
-
-	s.Where("gender = ?", gender)
-	s.And(query)
 
 	// 年齢の挿入
 	if searchCondition.Age.From != "" || searchCondition.Age.To != "" {
