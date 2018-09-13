@@ -204,9 +204,9 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 		fmt.Println("nil", empty)
 		sr.Create(empty)
 	} else {
-		stat = stats.ApplyNewLike(stat, partner)
-		fmt.Println("not nil", stat)
-		sr.Update(stat)
+		newstat := stats.ApplyNewLike(stat, partner)
+		fmt.Println("not nil", newstat)
+		sr.Update(newstat)
 	}
 
 	repositories.TransactionBegin(s)
