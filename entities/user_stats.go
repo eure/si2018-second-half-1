@@ -88,13 +88,31 @@ var CoordinateMap = map[string]models.Coordinate{
 }
 
 func toCoordinate(location string) models.Coordinate {
-	var coordinate models.Coordinate
-
-	return coordinate
+	return CoordinateMap[location]
 }
 
 func getNearChoices(average float64, choices map[string]float64) []string {
-	return []string{}
+	var left, just, right string
+	for k, v := range choices {
+		if choices[left] < v && v < average {
+			left = k
+		} else if average < v && v < choices[right] {
+			right = k
+		} else if average == v {
+			just = k
+		}
+	}
+	near := make([]string, 0)
+	if left != "" {
+		near = append(near, left)
+	}
+	if right != "" {
+		near = append(near, right)
+	}
+	if just != "" {
+		near = append(near, just)
+	}
+	return near
 }
 
 type Range struct {
@@ -103,6 +121,7 @@ type Range struct {
 }
 
 func getRoundedRange(average float64, lower, upper, unit int64) Range {
+	ind := (average - float64(lower)) / float64(unit)
 	return Range{From: 0, To: 0}
 }
 
