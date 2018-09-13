@@ -77,12 +77,12 @@ func SetUserImage(s *repositories.Session, user entities.User) (entities.User, e
 	return user, err
 }
 
-func GetHeight(u entities.User) float64 {
+func GetHeight(u *entities.User) float64 {
 	num, _ := strconv.Atoi(u.Height[0 : len(u.Height)-2])
 	return float64(num)
 }
 
-func GetAnnualIncome(u entities.User) float64 {
+func GetAnnualIncome(u *entities.User) float64 {
 	num, _ := strconv.Atoi(u.AnnualIncome[0 : len(u.AnnualIncome)-2])
 	return float64(num)
 }
@@ -96,34 +96,34 @@ func OneHot(value string, items []string) []float64 {
 		}
 		vec = append(vec, hot)
 	}
-	return hot
+	return vec
 }
 
 func MakeStat(u *entities.User) entities.UserStats {
-	home := CoordinateMap[u.HomeState]
-	resid := CoordinateMap[u.ResidenceState]
+	home := entities.CoordinateMap[u.HomeState]
+	resid := entities.CoordinateMap[u.ResidenceState]
 	hol := OneHot(u.Holiday, entities.Holiday)
-	job := OneHot(u.Job, entities.Job)
-	return UserStats{
+	job := OneHot(u.Job, entities.Jobs)
+	return entities.UserStats{
 		0,
 		float64(time.Time(u.Birthday).Unix()),
 		home.Longitude,
 		home.Latitude,
 		resid.Longitude,
 		resid.Latitude,
-		EducationChoices[u.Education],
+		entities.EducationChoices[u.Education],
 		GetAnnualIncome(u),
 		GetHeight(u),
-		BodyBuildChoices[u.BodyBuild],
-		SmokingChoices[u.Smoking],
-		DrinkingChoices[u.Drinking],
+		entities.BodyBuildChoices[u.BodyBuild],
+		entities.SmokingChoices[u.Smoking],
+		entities.DrinkingChoices[u.Drinking],
 		hol[0],
 		hol[1],
 		hol[2],
 		hol[3],
-		hol[0],
-		hol[1],
-		hol[2],
+		job[0],
+		job[1],
+		job[2],
 		strfmt.DateTime(u.Birthday),
 		strfmt.DateTime(u.Birthday)}
 }
