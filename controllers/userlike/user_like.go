@@ -1,7 +1,6 @@
 package userlike
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -219,15 +218,9 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 	}
 	if stat == nil {
 		empty := entities.UserStats{UserID: me.ID}
-		empty = stats.ApplyNewLike(&empty, partner)
-		empty.CreatedAt = now
-		empty.UpdatedAt = now
-		fmt.Println("nil", empty)
-		sr.Create(empty)
+		sr.Create(stats.ApplyNewLike(&empty, partner))
 	} else {
-		newstat := stats.ApplyNewLike(stat, partner)
-		fmt.Println("not nil", newstat)
-		sr.Update(newstat)
+		sr.Update(stats.ApplyNewLike(stat, partner))
 	}
 
 	// Like (Partner -> Me) の存在チェック
