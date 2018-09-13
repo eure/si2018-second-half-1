@@ -51,7 +51,7 @@ func GetUsers(p si.GetUsersParams) middleware.Responder {
 
 	// ユーザーの取得
 	r := repositories.NewUserRepository(s)
-	users, err := r.FindWithCondition(int(limit), int(offset), me.GetOppositeGender(), likeIDs)
+	users, err := r.FindWithCondition(int(limit), int(offset), me.GetOppositeGender(), likeIDs, *p.Params)
 	if err != nil {
 		return si.NewGetUsersInternalServerError().WithPayload(
 			&si.GetUsersInternalServerErrorBody{

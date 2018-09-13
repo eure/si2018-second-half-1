@@ -217,9 +217,31 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 				Message: "Internal Server Error :: LikeのInsertに失敗しました",
 			})
 	}
+
 	if stat == nil {
-		empty := entities.UserStats{UserID: me.ID}
-		sr.Create(stats.ApplyNewLike(&empty, partner))
+
+		ids, err := lr.FindMeLikeAll(me.ID)
+		if err != nil {
+			return si.NewPostLikeInternalServerError().WithPayload(
+				&si.PostLikeInternalServerErrorBody{
+					Code:    "500",
+					Message: "Internal Server Error :: 何人Likeしているかのカウントに失敗しました",
+				})
+		}
+
+		if len(ids) >= 10 {
+			us, err := ur.FindByIDs(ids)
+			if err != nil {
+				return si.NewPostLikeInternalServerError().WithPayload(
+					&si.PostLikeInternalServerErrorBody{
+						Code:    "500",
+						Message: "Internal Server Error :: MeがLikeしているユーザー情報の取得に失敗しました",
+					})
+			}
+
+			stats := stats.GetAverage(us)
+			sr.Create(stats)
+		}
 	} else {
 		sr.Update(stats.ApplyNewLike(stat, partner))
 	}
