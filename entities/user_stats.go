@@ -184,6 +184,19 @@ func int64ToString(n int64) string {
 	return fmt.Sprintf("%d", n)
 }
 
+func intmax(a, b int64) int64 {
+	if a < b {
+		return b
+	}
+	return a
+}
+
+func intmin(a, b int64) int64 {
+	if a < b {
+		return a
+	}
+	return b
+}
 func getRoundedRange(average float64, lower, upper, unit, width int64) Range {
 	ind := (average - float64(lower)) / float64(unit)
 	floor := int64(math.Floor(ind))
@@ -198,7 +211,7 @@ func getRoundedRange(average float64, lower, upper, unit, width int64) Range {
 		}
 		return Range{lower + unit*(floor-width), lower + unit*(floor+width)}
 	}
-	return Range{lower + unit*floor, lower + unit*ceil}
+	return Range{lower + unit*intmax(floor-width+1, 0), lower + unit*intmin(ceil+width-1, bound)}
 }
 
 func getNearHeight(average float64) models.IdealTypeHeight {
