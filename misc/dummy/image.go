@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -24,16 +25,16 @@ func dummyImage() {
 	}
 
 	femaleImg := []string{
-		"https://si-2018-000.eure.jp/assets/eye_yorime_yoseme_man.png",
-		"https://si-2018-000.eure.jp/assets/hair_kariage.png",
-		"https://si-2018-000.eure.jp/assets/kyosyu_man.png",
-		"https://si-2018-000.eure.jp/assets/nage_kiss_man.png",
-		"https://si-2018-000.eure.jp/assets/perm_hair_man.png",
-		"https://si-2018-000.eure.jp/assets/pose_ayashii_man.png",
-		"https://si-2018-000.eure.jp/assets/pose_kandou_man.png",
-		"https://si-2018-000.eure.jp/assets/pose_nigawarai_man.png",
-		"https://si-2018-000.eure.jp/assets/pose_shock_man.png",
-		"https://si-2018-000.eure.jp/assets/tehepero2_youngman.png",
+		"https://si-2018-000.eure.jp/assets/osyaberi2.png",
+		"https://si-2018-000.eure.jp/assets/pose_ayashii_woman.png",
+		"https://si-2018-000.eure.jp/assets/oowarai_woman.png",
+		"https://si-2018-000.eure.jp/assets/pose_nigawarai_woman.png",
+		"https://si-2018-000.eure.jp/assets/virus_mask_woman.png",
+		"https://si-2018-000.eure.jp/assets/eye_yorime_yoseme_woman.png",
+		"https://si-2018-000.eure.jp/assets/perm_hair_woman.png",
+		"https://si-2018-000.eure.jp/assets/tehepero6_youngwoman.png",
+		"https://si-2018-000.eure.jp/assets/bo-ttoshiteru_woman.png",
+		"https://si-2018-000.eure.jp/assets/hair_short_woman.png",
 	}
 
 	s := repositories.NewSession()
@@ -49,6 +50,9 @@ func dummyImage() {
 			UpdatedAt: now,
 		}
 		r.Create(image)
+		if i%100 == 0 {
+			fmt.Println("dummyImage", i)
+		}
 	}
 
 	// for female
@@ -61,5 +65,8 @@ func dummyImage() {
 			UpdatedAt: now,
 		}
 		r.Create(image)
+		if i%100 == 0 {
+			fmt.Println("dummyImage", i)
+		}
 	}
 }

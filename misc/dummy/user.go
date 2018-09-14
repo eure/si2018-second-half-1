@@ -272,7 +272,7 @@ func dummyUser() {
 		updatedDaysAgo := createdDaysAgo / (rand.Intn(600) + 1)
 		minute1 := rand.Intn(1440)
 		minute2 := rand.Intn(1440)
-		birthday := strfmt.Date(time.Now().Add((-time.Duration(20+rand.Intn(40))*365 + time.Duration(rand.Intn(365))) * (24 * time.Hour)))
+		birthday := strfmt.Date(time.Now().Add((-time.Duration(20+rand.Intn(20))*365 + time.Duration(rand.Intn(365))) * (24 * time.Hour)))
 
 		u := entities.User{
 			ID:             int64(i),
@@ -303,6 +303,9 @@ func dummyUser() {
 			UpdatedAt:      strfmt.DateTime(time.Now().AddDate(0, 0, -updatedDaysAgo).Add(-time.Duration(minute2) * time.Minute)),
 		}
 		r.Create(u)
+		if i%100 == 0 {
+			fmt.Println("dummyUser", i)
+		}
 	}
 
 	for i := femaleIDStart; i <= femaleIDEnd; i++ {
@@ -312,7 +315,7 @@ func dummyUser() {
 		updatedDaysAgo := createdDaysAgo / (rand.Intn(600) + 1)
 		minute1 := rand.Intn(1440)
 		minute2 := rand.Intn(1440)
-		birthday := strfmt.Date(time.Now().Add((-time.Duration(20+rand.Intn(40))*365 + time.Duration(rand.Intn(365))) * (24 * time.Hour)))
+		birthday := strfmt.Date(time.Now().Add((-time.Duration(20+rand.Intn(20))*365 + time.Duration(rand.Intn(365))) * (24 * time.Hour)))
 
 		u := entities.User{
 			ID:             int64(i),
@@ -343,6 +346,9 @@ func dummyUser() {
 			UpdatedAt:      strfmt.DateTime(time.Now().AddDate(0, 0, -updatedDaysAgo).Add(-time.Duration(minute2) * time.Minute)),
 		}
 		r.Create(u)
+		if i%100 == 0 {
+			fmt.Println("dummyUser", i)
+		}
 	}
 	fmt.Println(state)
 }

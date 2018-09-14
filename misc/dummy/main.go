@@ -13,22 +13,24 @@ import (
 const (
 	firstUserID   = 1
 	maleIDStart   = 1
-	maleIDEnd     = 1000
-	femaleIDStart = 1001
-	femaleIDEnd   = 2000
-	lastUserID    = 2000
+	maleIDEnd     = 5000
+	femaleIDStart = 5001
+	femaleIDEnd   = 10000
+	lastUserID    = 10000
 
 	maleMessageUserID   = 222
-	femaleMessageUserID = 1222
+	femaleMessageUserID = 5222
+	likeUserID          = 5111
+	matchUserID         = 5112
 )
 
 func main() {
-	dummyUser() // Male 1-1000, Female 1001-2000
-	// dummyToken() // Token for each Users
+	// dummyToken()             // Token for each Users
+	dummyUser() // Male 1-10000, Female 10001-20000
 	// dummyImage()             // Images for each Users
-	// dummyManyMessageCouple() // マッチ & メッセージしてるカップル M222 と F2222
-	// dummyManyGotLikeUser()   // F1111 に M1〜M100の男性からの被いいね
-	// dummyManyMatchUser()     // F1112 UID 1〜200の男性が UID 1112の女性とマッチ
+	dummyManyMessageCouple() // マッチ & メッセージしてるカップル M222 と F2222
+	dummyManyGotLikeUser()   // F11111 に M1〜M100の男性からの被いいね
+	dummyManyMatchUser()     // F11112 UID 1〜200の男性が UID 1112の女性とマッチ
 }
 
 func dummyManyGotLikeUser() {
@@ -43,7 +45,7 @@ func dummyManyGotLikeUser() {
 
 		ent := entities.UserLike{
 			UserID:    int64(i),
-			PartnerID: 1111,
+			PartnerID: likeUserID,
 			CreatedAt: randTime,
 			UpdatedAt: randTime,
 		}
@@ -59,14 +61,14 @@ func dummyManyMatchUser() {
 	lr := repositories.NewUserLikeRepository(s)
 	mr := repositories.NewUserMatchRepository(s)
 
-	// Male 1-100 & Female 1112
+	// Male 1-100 & Female 11112
 	// =====================================================
 
 	// first like
 	for i := 1; i <= 100; i++ {
 		ent := entities.UserLike{
 			UserID:    int64(i),
-			PartnerID: 1112,
+			PartnerID: matchUserID,
 			CreatedAt: firstLikeDate,
 			UpdatedAt: firstLikeDate,
 		}
@@ -76,7 +78,7 @@ func dummyManyMatchUser() {
 	// resp like
 	for i := 1; i <= 100; i++ {
 		ent := entities.UserLike{
-			UserID:    1112,
+			UserID:    matchUserID,
 			PartnerID: int64(i),
 			CreatedAt: responseLikeDate,
 			UpdatedAt: responseLikeDate,
@@ -88,7 +90,7 @@ func dummyManyMatchUser() {
 	for i := 1; i <= 100; i++ {
 		ent := entities.UserMatch{
 			UserID:    int64(i),
-			PartnerID: 1112,
+			PartnerID: matchUserID,
 			CreatedAt: strfmt.DateTime(time.Now().AddDate(0, 0, -1).Add(time.Duration(i) * time.Minute)), // Paginationのため分刻みでイテレート
 			UpdatedAt: strfmt.DateTime(time.Now().AddDate(0, 0, -1).Add(time.Duration(i) * time.Minute)), // Paginationのため分刻みでイテレート
 		}
@@ -101,7 +103,7 @@ func dummyManyMatchUser() {
 	// first like
 	for i := 101; i <= 200; i++ {
 		ent := entities.UserLike{
-			UserID:    1112,
+			UserID:    matchUserID,
 			PartnerID: int64(i),
 			CreatedAt: firstLikeDate,
 			UpdatedAt: firstLikeDate,
@@ -113,7 +115,7 @@ func dummyManyMatchUser() {
 	for i := 101; i <= 200; i++ {
 		ent := entities.UserLike{
 			UserID:    int64(i),
-			PartnerID: 1112,
+			PartnerID: matchUserID,
 			CreatedAt: responseLikeDate,
 			UpdatedAt: responseLikeDate,
 		}
@@ -123,7 +125,7 @@ func dummyManyMatchUser() {
 	// match
 	for i := 101; i <= 200; i++ {
 		ent := entities.UserMatch{
-			UserID:    1112,
+			UserID:    matchUserID,
 			PartnerID: int64(i),
 			CreatedAt: strfmt.DateTime(time.Now().AddDate(0, 0, -1).Add(time.Duration(i) * time.Minute)), // Paginationのため分刻みでイテレート
 			UpdatedAt: strfmt.DateTime(time.Now().AddDate(0, 0, -1).Add(time.Duration(i) * time.Minute)), // Paginationのため分刻みでイテレート

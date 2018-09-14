@@ -10,6 +10,7 @@ import (
 )
 
 func dummyToken() {
+	fmt.Printf("dummyToken")
 	s := repositories.NewSession()
 	r := repositories.NewUserTokenRepository(s)
 
@@ -22,5 +23,8 @@ func dummyToken() {
 			UpdatedAt: now,
 		}
 		r.Create(token)
+		if i%100 == 0 {
+			fmt.Println("dummyToken", i)
+		}
 	}
 }
