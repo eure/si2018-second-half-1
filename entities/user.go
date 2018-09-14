@@ -107,6 +107,6 @@ func (u User) GetAnnualIncome() float64 {
 		}
 	}
 	from, _ := strconv.Atoi(s[:strings.Index(s, "万")])
-	to, _ := strconv.Atoi(s[sep+1 : strings.LastIndex(s, "万")])
+	to, _ := strconv.Atoi(s[sep+len("〜") : strings.LastIndex(s, "万")])
 	return (float64(from) + float64(to)) / 2.0
 }
