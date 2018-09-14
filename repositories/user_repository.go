@@ -86,6 +86,7 @@ func (r *UserRepository) FindWithCondition(limit, offset int, gender string, ids
 
 	// 体型の挿入
 	if len(searchCondition.BodyBuild) != 0 {
+		fmt.Println(searchCondition.BodyBuild, len(searchCondition.BodyBuild))
 		s.In("body_build", searchCondition.BodyBuild)
 	}
 
