@@ -81,62 +81,74 @@ func (r *UserRepository) FindWithCondition(limit, offset int, gender string, ids
 
 	// 年収の挿入
 	if searchCondition.AnnualIncome.From != "" || searchCondition.AnnualIncome.To != "" {
+		fmt.Println("年収")
 		s.In("annual_income", ReAnnualIncome(searchCondition.Age.From, searchCondition.Age.To))
 	}
 
 	// 体型の挿入
 	if len(searchCondition.BodyBuild) != 0 {
-		fmt.Println(searchCondition.BodyBuild, len(searchCondition.BodyBuild))
+		fmt.Println("体型")
 		s.In("body_build", searchCondition.BodyBuild)
 	}
 
 	// お酒を飲むかの挿入
 	if len(searchCondition.Drinking) != 0 {
+		fmt.Println("お酒を飲むか")
 		s.In("drinking", searchCondition.Drinking)
 	}
 
 	// 学歴の挿入
 	if len(searchCondition.Education) != 0 {
+		fmt.Println("学歴")
 		s.In("education", searchCondition.Education)
 	}
 
 	// 身長の挿入
 	if searchCondition.Height.From != "" || searchCondition.Height.To != "" {
+		fmt.Println("身長")
 		s.In("height", ReHeight(searchCondition.Height.From, searchCondition.Height.To))
 	}
 
 	// 休日の挿入
 	if len(searchCondition.Holiday) != 0 {
+		fmt.Println("休日")
 		s.In("holiday", searchCondition.Holiday)
 	}
 
 	// 出身地の挿入
 	if len(searchCondition.HomeState) == 0 {
+		fmt.Println("出身地")
 		s.In("home_state", searchCondition.HomeState)
 	}
 
 	// 仕事の挿入
 	if len(searchCondition.Job) != 0 {
+		fmt.Println("仕事")
 		s.In("job", searchCondition.Job)
 	}
 
 	// 居住地の挿入
 	if len(searchCondition.ResidenceState) != 0 {
+		fmt.Println("居住地")
 		s.In("residence_state", searchCondition.ResidenceState)
 	}
 
 	// タバコの挿入
 	if len(searchCondition.Smoking) != 0 {
+		fmt.Println("タバコ")
 		s.In("smoking", searchCondition.Smoking)
 	}
 
 	// 年齢の挿入
 	if searchCondition.Age.From != "" || searchCondition.Age.To != "" {
+		fmt.Println("年齢")
 		if searchCondition.Age.From != "" {
+			fmt.Println("年齢1")
 			s.And("birthday < ?", ReAge(searchCondition.Age.From))
 		}
 
 		if searchCondition.Age.To != "" {
+			fmt.Println("年齢2")
 			s.And("birthday > ?", ReAge(searchCondition.Age.To))
 		}
 	}
