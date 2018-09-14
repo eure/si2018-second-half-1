@@ -263,6 +263,9 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 			}
 
 			stats := stats.GetAverage(us)
+			stats.UserID = me.ID
+			stats.CreatedAt = now
+			stats.UpdatedAt = now
 			sr.Create(stats)
 		}
 	} else {
@@ -275,7 +278,7 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 	getLike, err := lr.GetLikeBySenderIDReceiverID(partnerID, me.ID)
 	if getLike == nil {
 		repositories.TransactionCommit(s)
-		fmt.Println("**************** !!!PostLike ERROR!!! 200 Likeが送信されました ****************")
+		fmt.Println("**************** PostLike OK 200 Likeが送信されました ****************")
 		return si.NewPostLikeOK().WithPayload(
 			&si.PostLikeOKBody{
 				Code:    "200",

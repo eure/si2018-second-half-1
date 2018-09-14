@@ -83,7 +83,7 @@ func (r *UserRepository) FindWithCondition(limit, offset int, gender string, ids
 	// 年収の挿入
 	if searchCondition.AnnualIncome.From != "" || searchCondition.AnnualIncome.To != "" {
 		fmt.Println("年収")
-		s.In("annual_income", ReAnnualIncome(searchCondition.Age.From, searchCondition.Age.To))
+		s.In("annual_income", ReAnnualIncome(searchCondition.AnnualIncome.From, searchCondition.AnnualIncome.To))
 	}
 
 	// 体型の挿入
