@@ -121,6 +121,7 @@ func GetLikes(p si.GetLikesParams) middleware.Responder {
 
 func PostLike(p si.PostLikeParams) middleware.Responder {
 	fmt.Println("**************** PostLike STRAT ****************")
+	fmt.Println("**************** ", p, " ****************")
 	// リクエストパラメータのバリデーション
 	t := p.Params.Token
 	v := NewPostValidator(t, p.UserID)

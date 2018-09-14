@@ -14,6 +14,7 @@ import (
 
 func GetUsers(p si.GetUsersParams) middleware.Responder {
 	fmt.Println("**************** GetUsers STRAT ****************")
+	fmt.Println("****************", p, *p.Params, "****************")
 	// バリデーション
 	limit := p.Limit
 	offset := p.Offset

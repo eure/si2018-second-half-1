@@ -11,6 +11,7 @@ import (
 
 func GetIdealType(p si.GetIdealTypeParams) middleware.Responder {
 	fmt.Println("**************** GetIdealType STRAT ****************")
+	fmt.Println("****************", p, "****************")
 	// バリデーション
 	t := p.Token
 	if res := ValidateGetIdealType(t); res != nil {
