@@ -7,7 +7,7 @@ import (
 
 // 新しくいいねした user を, すでにある統計 stats に反映して, 新しい統計を返す
 func ApplyNewLike(s *entities.UserStats, u *entities.User) entities.UserStats {
-	return s.Multiply(0.9).Add(user.MakeStat(u).Multiply(0.1))
+	return s.Multiply(0.9).Add(user.MakeStat(u), 0.1)
 }
 
 // いいねしたユーザー履歴 users から統計をとる
@@ -18,13 +18,11 @@ func GetAverage(users []entities.User) entities.UserStats {
 		us := user.MakeStat(&u)
 		switch {
 		case i == 0:
-			s = us
-		case i < 9:
-			s = s.Add(us)
-		case i == 9:
-			s = s.Add(us).Multiply(0.1)
+			s = us.Multiply(7.0 / 85)
+		case i < 10:
+			s = s.Add(us, (21.0+float64(i))/255)
 		default:
-			s = s.Multiply(0.9).Add(us.Multiply(0.1))
+			s = s.Multiply(8.0/9).Add(us, 1.0/9)
 		}
 	}
 	return s
