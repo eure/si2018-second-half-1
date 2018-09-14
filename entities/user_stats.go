@@ -36,53 +36,53 @@ type UserStats struct {
 
 func (s UserStats) Multiply(ratio float64) UserStats {
 	return UserStats{
-		s.UserID,
-		s.Birthday * ratio,
-		s.HomeStateX * ratio,
-		s.HomeStateY * ratio,
-		s.ResidenceStateX * ratio,
-		s.ResidenceStateY * ratio,
-		s.Education * ratio,
-		s.AnnualIncome * ratio,
-		s.Height * ratio,
-		s.BodyBuild * ratio,
-		s.Smoking * ratio,
-		s.Drinking * ratio,
-		s.HolidayWeekday * ratio,
-		s.HolidayWeekend * ratio,
-		s.HolidayRandom * ratio,
-		s.HolidayOthers * ratio,
-		s.JobEmployee * ratio,
-		s.JobStudent * ratio,
-		s.JobCreator * ratio,
-		s.CreatedAt,
-		s.UpdatedAt,
+		UserID:          s.UserID,
+		Birthday:        s.Birthday * ratio,
+		HomeStateX:      s.HomeStateX * ratio,
+		HomeStateY:      s.HomeStateY * ratio,
+		ResidenceStateX: s.ResidenceStateX * ratio,
+		ResidenceStateY: s.ResidenceStateY * ratio,
+		Education:       s.Education * ratio,
+		AnnualIncome:    s.AnnualIncome * ratio,
+		Height:          s.Height * ratio,
+		BodyBuild:       s.BodyBuild * ratio,
+		Smoking:         s.Smoking * ratio,
+		Drinking:        s.Drinking * ratio,
+		HolidayWeekday:  s.HolidayWeekday * ratio,
+		HolidayWeekend:  s.HolidayWeekend * ratio,
+		HolidayRandom:   s.HolidayRandom * ratio,
+		HolidayOthers:   s.HolidayOthers * ratio,
+		JobEmployee:     s.JobEmployee * ratio,
+		JobStudent:      s.JobStudent * ratio,
+		JobCreator:      s.JobCreator * ratio,
+		CreatedAt:       s.CreatedAt,
+		UpdatedAt:       s.UpdatedAt,
 	}
 }
 
 func (s UserStats) Add(u UserStats, ratio float64) UserStats {
 	return UserStats{
-		s.UserID,
-		s.Birthday + u.Birthday*ratio,
-		s.HomeStateX + u.HomeStateX*ratio,
-		s.HomeStateY + u.HomeStateY*ratio,
-		s.ResidenceStateX + u.ResidenceStateX*ratio,
-		s.ResidenceStateY + u.ResidenceStateY*ratio,
-		s.Education + u.Education*ratio,
-		s.AnnualIncome + u.AnnualIncome*ratio,
-		s.Height + u.Height*ratio,
-		s.BodyBuild + u.BodyBuild*ratio,
-		s.Smoking + u.Smoking*ratio,
-		s.Drinking + u.Drinking*ratio,
-		s.HolidayWeekday + u.HolidayWeekday*ratio,
-		s.HolidayWeekend + u.HolidayWeekend*ratio,
-		s.HolidayRandom + u.HolidayRandom*ratio,
-		s.HolidayOthers + u.HolidayOthers*ratio,
-		s.JobEmployee + u.JobEmployee*ratio,
-		s.JobStudent + u.JobStudent*ratio,
-		s.JobCreator + u.JobCreator*ratio,
-		s.CreatedAt,
-		s.UpdatedAt,
+		UserID:          s.UserID,
+		Birthday:        s.Birthday + u.Birthday*ratio,
+		HomeStateX:      s.HomeStateX + u.HomeStateX*ratio,
+		HomeStateY:      s.HomeStateY + u.HomeStateY*ratio,
+		ResidenceStateX: s.ResidenceStateX + u.ResidenceStateX*ratio,
+		ResidenceStateY: s.ResidenceStateY + u.ResidenceStateY*ratio,
+		Education:       s.Education + u.Education*ratio,
+		AnnualIncome:    s.AnnualIncome + u.AnnualIncome*ratio,
+		Height:          s.Height + u.Height*ratio,
+		BodyBuild:       s.BodyBuild + u.BodyBuild*ratio,
+		Smoking:         s.Smoking + u.Smoking*ratio,
+		Drinking:        s.Drinking + u.Drinking*ratio,
+		HolidayWeekday:  s.HolidayWeekday + u.HolidayWeekday*ratio,
+		HolidayWeekend:  s.HolidayWeekend + u.HolidayWeekend*ratio,
+		HolidayRandom:   s.HolidayRandom + u.HolidayRandom*ratio,
+		HolidayOthers:   s.HolidayOthers + u.HolidayOthers*ratio,
+		JobEmployee:     s.JobEmployee + u.JobEmployee*ratio,
+		JobStudent:      s.JobStudent + u.JobStudent*ratio,
+		JobCreator:      s.JobCreator + u.JobCreator*ratio,
+		CreatedAt:       s.CreatedAt,
+		UpdatedAt:       s.UpdatedAt,
 	}
 }
 
@@ -154,9 +154,9 @@ var States = []string{
 func getNearChoices(average float64, choices map[string]float64) []string {
 	var left, just, right string
 	for k, v := range choices {
-		if choices[left] < v && v < average {
+		if (left == "" || choices[left] < v) && v < average {
 			left = k
-		} else if average < v && v < choices[right] {
+		} else if average < v && (right == "" || v < choices[right]) {
 			right = k
 		} else if average == v {
 			just = k

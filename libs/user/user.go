@@ -8,7 +8,6 @@ import (
 	"github.com/eure/si2018-second-half-1/entities"
 	"github.com/eure/si2018-second-half-1/repositories"
 	si "github.com/eure/si2018-second-half-1/restapi/summerintern"
-	"github.com/go-openapi/strfmt"
 )
 
 func BuildUserEntityByModel(meID int64, p si.PutProfileBody) entities.User {
@@ -106,25 +105,22 @@ func MakeStat(u *entities.User) entities.UserStats {
 	hol := OneHot(u.Holiday, entities.Holiday)
 	job := OneHot(u.Job, entities.Jobs)
 	return entities.UserStats{
-		0,
-		float64(time.Time(u.Birthday).Unix()),
-		home.Longitude,
-		home.Latitude,
-		resid.Longitude,
-		resid.Latitude,
-		entities.EducationChoices[u.Education],
-		GetAnnualIncome(u),
-		GetHeight(u),
-		entities.BodyBuildChoices[u.BodyBuild],
-		entities.SmokingChoices[u.Smoking],
-		entities.DrinkingChoices[u.Drinking],
-		hol[0],
-		hol[1],
-		hol[2],
-		hol[3],
-		job[0],
-		job[1],
-		job[2],
-		strfmt.DateTime(u.Birthday),
-		strfmt.DateTime(u.Birthday)}
+		Birthday:        float64(time.Time(u.Birthday).Unix()),
+		HomeStateX:      home.Longitude,
+		HomeStateY:      home.Latitude,
+		ResidenceStateX: resid.Longitude,
+		ResidenceStateY: resid.Latitude,
+		Education:       entities.EducationChoices[u.Education],
+		AnnualIncome:    GetAnnualIncome(u),
+		Height:          GetHeight(u),
+		BodyBuild:       entities.BodyBuildChoices[u.BodyBuild],
+		Smoking:         entities.SmokingChoices[u.Smoking],
+		Drinking:        entities.DrinkingChoices[u.Drinking],
+		HolidayWeekday:  hol[0],
+		HolidayWeekend:  hol[1],
+		HolidayRandom:   hol[2],
+		HolidayOthers:   hol[3],
+		JobEmployee:     job[0],
+		JobStudent:      job[1],
+		JobCreator:      job[2]}
 }
