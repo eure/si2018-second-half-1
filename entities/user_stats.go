@@ -246,28 +246,30 @@ func round(f float64) float64 {
 var IncomeChoices = []int64{200, 400, 600, 800, 1000, 1500, 2000, 3000}
 
 func getNearAnnualIncome(average float64) models.IdealTypeAnnualIncome {
-	left := -1
-	right := -1
-	just := -1
+	if average <= 200 {
+		return models.IdealTypeAnnualIncome{
+			From: "",
+			To:   "400万円"}
+	}
+	if average >= 3000 {
+		return models.IdealTypeAnnualIncome{
+			From: "3000万円",
+			To:   ""}
+	}
+	var left int64 = 0
+	var right int64 = 7
 	for k, v := range IncomeChoices {
 		fv := float64(v)
-		if (left < 0 || IncomeChoices[left] < v) && fv < average {
-			left = k
-		} else if average < fv && (right < 0 || v < IncomeChoices[right]) {
-			right = k
-		} else if average == fv {
-			just = k
+		if (left < 0 || IncomeChoices[left] < v) && fv <= average {
+			left = int64(k)
+		}
+		if average <= fv && (right < 0 || v < IncomeChoices[right]) {
+			right = int64(k)
 		}
 	}
-	if left < 0 {
-		left = just
-	}
-	if right < 0 {
-		right = just
-	}
 	return models.IdealTypeAnnualIncome{
-		From: int64ToString(IncomeChoices[left]) + "万円",
-		To:   int64ToString(IncomeChoices[right]) + "万円"}
+		From: int64ToString(IncomeChoices[intmax(left-1, 0)]) + "万円",
+		To:   int64ToString(IncomeChoices[intmin(right+1, 7)]) + "万円"}
 }
 
 func getNearAge(average float64) models.IdealTypeAge {
@@ -275,7 +277,7 @@ func getNearAge(average float64) models.IdealTypeAge {
 	birth := time.Unix(int64(round(average)), 0)
 	span := now.Sub(birth)
 	years := span.Hours() / (24 * 365)
-	r := getRoundedRange(years, 18, 65, 1, 4)
+	r := getRoundedRange(years, 18, 65, 1, 6)
 	return models.IdealTypeAge{From: int64ToString(r.From) + "歳", To: int64ToString(r.To) + "歳"}
 }
 
