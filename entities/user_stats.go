@@ -232,8 +232,10 @@ func getNearState(x, y float64) []string {
 	sort.SliceStable(States, func(i, j int) bool {
 		return dist[States[i]] < dist[States[j]]
 	})
-	ans := make([]string, 8)
+	ans := make([]string, 10)
 	copy(ans, States[:8])
+	ans[8] = "東京"
+	ans[9] = "大阪"
 	return ans
 }
 
