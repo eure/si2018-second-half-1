@@ -58,8 +58,8 @@ func (r *UserRepository) GetByUserID(userID int64) (*entities.User, error) {
 }
 
 func toString(t models.IdealType) string {
-	return fmt.Sprintf("age = %v, annual_income = %v, body_build = %v, drinking = %v, education = %v, height = %v, holiday = %v, home_state = %v, job = %v, residence_state = %v, smoking = %v",
-		*t.Age, *t.AnnualIncome, t.BodyBuild, t.Drinking, t.Education, t.Height, t.Holiday, t.HomeState, t.Job, t.ResidenceState, t.Smoking)
+	return fmt.Sprintf("age = %v ~ %v, annual_income = %v ~ %v, body_build = %v, drinking = %v, education = %v, height = %v ~ %v, holiday = %v, home_state = %v, job = %v, residence_state = %v, smoking = %v",
+		t.Age.From, t.Age.To, t.AnnualIncome.From, t.AnnualIncome.To, t.BodyBuild, t.Drinking, t.Education, t.Height.From, t.Height.To, t.Holiday, t.HomeState, t.Job, t.ResidenceState, t.Smoking)
 }
 
 // limit / offset / 検索対象の性別 でユーザーを取得
