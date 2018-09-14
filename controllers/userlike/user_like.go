@@ -119,9 +119,14 @@ func GetLikes(p si.GetLikesParams) middleware.Responder {
 	return si.NewGetLikesOK().WithPayload(swaggerResponses)
 }
 
+func toString(t si.PostLikeParams) string {
+	return fmt.Sprintf("id = %v, params = {token = %v}",
+		t.UserID, t.Params.Token)
+}
+
 func PostLike(p si.PostLikeParams) middleware.Responder {
 	fmt.Println("**************** PostLike STRAT ****************")
-	fmt.Println("**************** ", p, " ****************")
+	fmt.Println("**************** ", toString(p), " ****************")
 	// リクエストパラメータのバリデーション
 	t := p.Params.Token
 	v := NewPostValidator(t, p.UserID)
@@ -134,6 +139,7 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 	// meチェック
 	me, err := token.GetUserByToken(s, t)
 	if err != nil {
+		fmt.Println("**************** !!!PostLike ERROR!!! 500 Meの取得に失敗しました ****************")
 		return si.NewPostLikeInternalServerError().WithPayload(
 			&si.PostLikeInternalServerErrorBody{
 				Code:    "500",
@@ -141,6 +147,7 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 			})
 	}
 	if me == nil {
+		fmt.Println("**************** !!!PostLike ERROR!!! 401 トークンが無効です ****************")
 		return si.NewPostLikeUnauthorized().WithPayload(
 			&si.PostLikeUnauthorizedBody{
 				Code:    "401",
@@ -152,6 +159,7 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 	ur := repositories.NewUserRepository(s)
 	partner, err := ur.GetByUserID(partnerID)
 	if err != nil {
+		fmt.Println("**************** !!!PostLike ERROR!!! 500 Partnerの取得に失敗しました ****************")
 		return si.NewPostLikeInternalServerError().WithPayload(
 			&si.PostLikeInternalServerErrorBody{
 				Code:    "500",
@@ -159,6 +167,7 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 			})
 	}
 	if partner == nil {
+		fmt.Println("**************** !!!PostLike ERROR!!! 400 お相手が存在しません ****************")
 		return si.NewPostLikeBadRequest().WithPayload(
 			&si.PostLikeBadRequestBody{
 				Code:    "400",
@@ -166,6 +175,7 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 			})
 	}
 	if me.Gender == partner.Gender {
+		fmt.Println("**************** !!!PostLike ERROR!!! 400 同性へのいいねはできません ****************")
 		return si.NewPostLikeBadRequest().WithPayload(
 			&si.PostLikeBadRequestBody{
 				Code:    "400",
@@ -178,6 +188,7 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 	lr := repositories.NewUserLikeRepository(s)
 	sendLike, err := lr.GetLikeBySenderIDReceiverID(me.ID, partnerID)
 	if err != nil {
+		fmt.Println("**************** !!!PostLike ERROR!!! 500 Likeの取得に失敗しました ****************")
 		return si.NewPostLikeInternalServerError().WithPayload(
 			&si.PostLikeInternalServerErrorBody{
 				Code:    "500",
@@ -185,6 +196,7 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 			})
 	}
 	if sendLike != nil {
+		fmt.Println("**************** !!!PostLike ERROR!!! 400 既にLike送信済みです ****************")
 		return si.NewPostLikeBadRequest().WithPayload(
 			&si.PostLikeBadRequestBody{
 				Code:    "400",
@@ -196,6 +208,7 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 	sr := repositories.NewUserStatsRepository(s)
 	stat, err := sr.GetByUserID(me.ID)
 	if err != nil {
+		fmt.Println("**************** !!!PostLike ERROR!!! 500 Statsの取得に失敗しました ****************")
 		return si.NewPostLikeInternalServerError().WithPayload(
 			&si.PostLikeInternalServerErrorBody{
 				Code:    "500",
@@ -215,6 +228,7 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 		})
 	if err != nil {
 		repositories.TransactionRollBack(s)
+		fmt.Println("**************** !!!PostLike ERROR!!! 500 LikeのInsertに失敗しました ****************")
 		return si.NewPostLikeInternalServerError().WithPayload(
 			&si.PostLikeInternalServerErrorBody{
 				Code:    "500",
@@ -226,6 +240,8 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 
 		ids, err := lr.FindMeLikeAll(me.ID)
 		if err != nil {
+			repositories.TransactionRollBack(s)
+			fmt.Println("**************** !!!PostLike ERROR!!! 500 何人Likeしているかのカウントに失敗しました ****************")
 			return si.NewPostLikeInternalServerError().WithPayload(
 				&si.PostLikeInternalServerErrorBody{
 					Code:    "500",
@@ -234,8 +250,11 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 		}
 
 		if len(ids) >= 10 {
+			fmt.Println("ユーザー", me.ID, "は", len(ids), "人にいいねしたので, 統計データを作成します")
 			us, err := ur.FindByIDs(ids)
 			if err != nil {
+				repositories.TransactionRollBack(s)
+				fmt.Println("**************** !!!PostLike ERROR!!! 500 MeがLikeしているユーザー情報の取得に失敗しました ****************")
 				return si.NewPostLikeInternalServerError().WithPayload(
 					&si.PostLikeInternalServerErrorBody{
 						Code:    "500",
@@ -247,6 +266,7 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 			sr.Create(stats)
 		}
 	} else {
+		fmt.Println("ユーザー", me.ID, "の統計データを更新します")
 		sr.Update(stats.ApplyNewLike(stat, partner))
 	}
 
@@ -255,6 +275,7 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 	getLike, err := lr.GetLikeBySenderIDReceiverID(partnerID, me.ID)
 	if getLike == nil {
 		repositories.TransactionCommit(s)
+		fmt.Println("**************** !!!PostLike ERROR!!! 200 Likeが送信されました ****************")
 		return si.NewPostLikeOK().WithPayload(
 			&si.PostLikeOKBody{
 				Code:    "200",
@@ -273,6 +294,7 @@ func PostLike(p si.PostLikeParams) middleware.Responder {
 		})
 	if err != nil {
 		repositories.TransactionRollBack(s)
+		fmt.Println("**************** !!!PostLike ERROR!!! 500 MatchのInsertに失敗しました ****************")
 		return si.NewPostLikeInternalServerError().WithPayload(
 			&si.PostLikeInternalServerErrorBody{
 				Code:    "500",
