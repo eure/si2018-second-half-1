@@ -18,7 +18,7 @@ func ToString(s entities.UserStats) string {
 
 // 新しくいいねした user を, すでにある統計 stats に反映して, 新しい統計を返す
 func ApplyNewLike(s *entities.UserStats, u *entities.User) entities.UserStats {
-	ans := s.Multiply(0.9).Add(user.MakeStat(u), 0.1)
+	ans := s.Multiply(8.0/9).Add(user.MakeStat(u), 1.0/9)
 	fmt.Println(ToString(ans))
 	return ans
 }
