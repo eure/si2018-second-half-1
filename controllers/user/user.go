@@ -75,6 +75,7 @@ func GetUsers(p si.GetUsersParams) middleware.Responder {
 
 	eUsers := entities.Users(userList)
 	sUsers := eUsers.Build()
+	fmt.Println("return: ", eUsers)
 	fmt.Println("**************** GetUsers END ****************")
 	return si.NewGetUsersOK().WithPayload(sUsers)
 }

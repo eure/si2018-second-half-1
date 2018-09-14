@@ -1,6 +1,7 @@
 package user
 
 import (
+	"fmt"
 	"strconv"
 
 	"time"
@@ -48,6 +49,8 @@ func SetUsersImage(s *repositories.Session, users []entities.User) ([]entities.U
 	}
 
 	rp := repositories.NewUserImageRepository(s)
+	fmt.Println("*************** Call NewUserImageRepository.GetByUserIDs ****************")
+	fmt.Println("ids", userIDs)
 	userImage, err := rp.GetByUserIDs(userIDs)
 	if err != nil {
 		return nil, err

@@ -219,8 +219,8 @@ func getNearState(x, y float64) []string {
 	sort.SliceStable(States, func(i, j int) bool {
 		return dist[States[i]] < dist[States[j]]
 	})
-	ans := make([]string, 3)
-	copy(ans, States[:3])
+	ans := make([]string, 6)
+	copy(ans, States[:6])
 	return ans
 }
 
