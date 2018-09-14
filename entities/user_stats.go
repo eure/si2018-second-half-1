@@ -184,25 +184,25 @@ func int64ToString(n int64) string {
 	return fmt.Sprintf("%d", n)
 }
 
-func getRoundedRange(average float64, lower, upper, unit int64) Range {
+func getRoundedRange(average float64, lower, upper, unit, width int64) Range {
 	ind := (average - float64(lower)) / float64(unit)
 	floor := int64(math.Floor(ind))
 	ceil := int64(math.Ceil(ind))
 	bound := (upper - lower) / unit
 	if floor == ceil {
-		if floor == 0 {
-			return Range{lower, lower + unit}
+		if floor < width {
+			return Range{lower, lower + unit*(floor+width)}
 		}
-		if floor == bound {
-			return Range{lower + unit*(bound-1), lower + unit*bound}
+		if floor+width >= bound {
+			return Range{lower + unit*(bound-width), lower + unit*bound}
 		}
-		return Range{lower + unit*(floor-1), lower + unit*(floor+1)}
+		return Range{lower + unit*(floor-width), lower + unit*(floor+width)}
 	}
 	return Range{lower + unit*floor, lower + unit*ceil}
 }
 
 func getNearHeight(average float64) models.IdealTypeHeight {
-	r := getRoundedRange(average, 135, 200, 5)
+	r := getRoundedRange(average, 135, 200, 5, 2)
 	return models.IdealTypeHeight{From: int64ToString(r.From) + "cm", To: int64ToString(r.To) + "cm"}
 }
 
@@ -219,8 +219,8 @@ func getNearState(x, y float64) []string {
 	sort.SliceStable(States, func(i, j int) bool {
 		return dist[States[i]] < dist[States[j]]
 	})
-	ans := make([]string, 6)
-	copy(ans, States[:6])
+	ans := make([]string, 8)
+	copy(ans, States[:8])
 	return ans
 }
 
@@ -260,7 +260,7 @@ func getNearAge(average float64) models.IdealTypeAge {
 	birth := time.Unix(int64(round(average)), 0)
 	span := now.Sub(birth)
 	years := span.Hours() / (24 * 365)
-	r := getRoundedRange(years, 18, 65, 1)
+	r := getRoundedRange(years, 18, 65, 1, 4)
 	return models.IdealTypeAge{From: int64ToString(r.From) + "歳", To: int64ToString(r.To) + "歳"}
 }
 
