@@ -57,11 +57,17 @@ func (r *UserRepository) GetByUserID(userID int64) (*entities.User, error) {
 	return nil, nil
 }
 
+func toString(t models.IdealType) string {
+	return fmt.Sprintf("age = %v, annual_income = %v, body_build = %v, drinking = %v, education = %v, height = %v, holiday = %v, home_state = %v, job = %v, residence_state = %v, smoking = %v",
+		*t.Age, *t.AnnualIncome, t.BodyBuild, t.Drinking, t.Education, t.Height, t.Holiday, t.HomeState, t.Job, t.ResidenceState, t.Smoking)
+}
+
 // limit / offset / 検索対象の性別 でユーザーを取得
 // idsには取得対象に含めないUserIDを入れる (いいね/マッチ/ブロック済みなど)
 func (r *UserRepository) FindWithCondition(limit, offset int, gender string, ids []int64, searchCondition models.IdealType) ([]entities.User, error) {
 	fmt.Println("***************** FindWithConditionのpamars *******************")
-	fmt.Println(searchCondition)
+	fmt.Println("limit", limit, "offset", offset, "gender", gender, "exclude", ids)
+	fmt.Println(toString(searchCondition))
 	fmt.Println("***************************************************************")
 
 	var users []entities.User
@@ -79,17 +85,17 @@ func (r *UserRepository) FindWithCondition(limit, offset int, gender string, ids
 	}
 
 	// 体型の挿入
-	if len(searchCondition.BodyBuild) == 0 {
+	if len(searchCondition.BodyBuild) != 0 {
 		s.In("body_build", searchCondition.BodyBuild)
 	}
 
 	// お酒を飲むかの挿入
-	if len(searchCondition.Drinking) == 0 {
+	if len(searchCondition.Drinking) != 0 {
 		s.In("drinking", searchCondition.Drinking)
 	}
 
 	// 学歴の挿入
-	if len(searchCondition.Education) == 0 {
+	if len(searchCondition.Education) != 0 {
 		s.In("education", searchCondition.Education)
 	}
 
@@ -99,7 +105,7 @@ func (r *UserRepository) FindWithCondition(limit, offset int, gender string, ids
 	}
 
 	// 休日の挿入
-	if len(searchCondition.Holiday) == 0 {
+	if len(searchCondition.Holiday) != 0 {
 		s.In("holiday", searchCondition.Holiday)
 	}
 
@@ -109,17 +115,17 @@ func (r *UserRepository) FindWithCondition(limit, offset int, gender string, ids
 	}
 
 	// 仕事の挿入
-	if len(searchCondition.Job) == 0 {
+	if len(searchCondition.Job) != 0 {
 		s.In("job", searchCondition.Job)
 	}
 
 	// 居住地の挿入
-	if len(searchCondition.ResidenceState) == 0 {
+	if len(searchCondition.ResidenceState) != 0 {
 		s.In("residence_state", searchCondition.ResidenceState)
 	}
 
 	// タバコの挿入
-	if len(searchCondition.Smoking) == 0 {
+	if len(searchCondition.Smoking) != 0 {
 		s.In("smoking", searchCondition.Smoking)
 	}
 
