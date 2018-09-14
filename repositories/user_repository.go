@@ -116,7 +116,7 @@ func (r *UserRepository) FindWithCondition(limit, offset int, gender string, ids
 	}
 
 	// 出身地の挿入
-	if len(searchCondition.HomeState) == 0 {
+	if len(searchCondition.HomeState) != 0 {
 		fmt.Println("出身地")
 		s.In("home_state", searchCondition.HomeState)
 	}
