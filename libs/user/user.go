@@ -2,7 +2,6 @@ package user
 
 import (
 	"fmt"
-	"strconv"
 
 	"time"
 
@@ -80,16 +79,6 @@ func SetUserImage(s *repositories.Session, user entities.User) (entities.User, e
 	return user, err
 }
 
-func GetHeight(u *entities.User) float64 {
-	num, _ := strconv.Atoi(u.Height[0 : len(u.Height)-2])
-	return float64(num)
-}
-
-func GetAnnualIncome(u *entities.User) float64 {
-	num, _ := strconv.Atoi(u.AnnualIncome[0 : len(u.AnnualIncome)-2])
-	return float64(num)
-}
-
 func OneHot(value string, items []string) []float64 {
 	vec := make([]float64, 0)
 	for _, v := range items {
@@ -114,8 +103,8 @@ func MakeStat(u *entities.User) entities.UserStats {
 		ResidenceStateX: resid.Longitude,
 		ResidenceStateY: resid.Latitude,
 		Education:       entities.EducationChoices[u.Education],
-		AnnualIncome:    GetAnnualIncome(u),
-		Height:          GetHeight(u),
+		AnnualIncome:    u.GetAnnualIncome(),
+		Height:          u.GetHeight(),
 		BodyBuild:       entities.BodyBuildChoices[u.BodyBuild],
 		Smoking:         entities.SmokingChoices[u.Smoking],
 		Drinking:        entities.DrinkingChoices[u.Drinking],
