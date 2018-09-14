@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"strings"
 
+	"fmt"
+
 	"github.com/eure/si2018-second-half-1/entities"
 	"github.com/eure/si2018-second-half-1/models"
 )
@@ -58,6 +60,10 @@ func (r *UserRepository) GetByUserID(userID int64) (*entities.User, error) {
 // limit / offset / 検索対象の性別 でユーザーを取得
 // idsには取得対象に含めないUserIDを入れる (いいね/マッチ/ブロック済みなど)
 func (r *UserRepository) FindWithCondition(limit, offset int, gender string, ids []int64, searchCondition models.IdealType) ([]entities.User, error) {
+	fmt.Println("***************** FindWithConditionのpamars *******************")
+	fmt.Println(searchCondition)
+	fmt.Println("***************************************************************")
+
 	var users []entities.User
 
 	s := r.GetSession()
